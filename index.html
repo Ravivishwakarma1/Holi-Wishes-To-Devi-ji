@@ -7,71 +7,75 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poppins:wght@400;600&display=swap');
 
+        /* --- Mood Themes --- */
         :root {
             --bg-color: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%);
             --accent: #d81b60;
         }
 
-        .vibrant-mode {
-            --bg-color: linear-gradient(135deg, #8bc34a 0%, #00bcd4 100%);
-            --accent: #ffeb3b;
-        }
+        body.theme-vibrant { --bg-color: linear-gradient(135deg, #8bc34a 0%, #00bcd4 100%); --accent: #2196f3; }
+        body.theme-sunset { --bg-color: linear-gradient(135deg, #ff9800 0%, #fe5196 100%); --accent: #ffeb3b; }
+        body.theme-royal { --bg-color: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); --accent: #00e5ff; }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
             background: var(--bg-color); overflow-x: hidden;
-            transition: background 0.5s ease;
+            transition: background 0.6s ease;
         }
 
         /* --- UI Controls --- */
-        #mood-toggle { position: fixed; top: 20px; right: 20px; z-index: 1001; padding: 10px; background: #fff; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; }
-        
+        #mood-toggle { position: fixed; top: 20px; right: 20px; z-index: 1001; padding: 12px; background: #fff; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; }
         #music-disk { position: fixed; top: 20px; left: 20px; width: 60px; height: 60px; background: #333; border: 4px solid #fff; border-radius: 50%; z-index: 1000; cursor: pointer; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: rotate 3s linear infinite; animation-play-state: paused; }
-        #music-disk::after { content: '🎵'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        #music-disk::after { content: '🎵'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; }
 
-        /* --- Welcome Page --- */
-        #welcome-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ff9a9e, #fad0c4); display: flex; justify-content: center; align-items: center; z-index: 2000; transition: opacity 1s ease; }
-
-        /* --- Splash Effect --- */
-        .splat { position: absolute; width: 25px; height: 25px; border-radius: 50%; pointer-events: none; animation: fadeSplat 1s forwards; z-index: 9999; }
-        @keyframes fadeSplat { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
-
-        /* --- Main Content --- */
+        /* --- Screens --- */
+        #welcome-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ff9a9e, #fad0c4); display: flex; justify-content: center; align-items: center; z-index: 5000; }
+        #reel-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; z-index: 4000; justify-content: center; align-items: center; flex-direction: column; }
         #main-content { display: none; opacity: 0; transition: 1.5s; text-align: center; }
-        .banner { width: 100%; height: 60vh; background: url("Image%20and%20Video/backshot.jpg") center/cover no-repeat; }
+        #exit-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: none; z-index: 7000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
 
-        /* --- Pop-up Letter (Formated as requested) --- */
-        #letter-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 4000; justify-content: center; align-items: center; }
-        .letter-content { 
-            background: #fff; width: 85%; max-width: 600px; max-height: 80vh; padding: 40px; 
-            border-radius: 15px; overflow-y: auto; text-align: left; line-height: 1.8; 
-            border-top: 10px solid var(--accent); white-space: pre-wrap; /* Critical for your spacing */
-        }
-
-        /* --- Gallery Section Layout Fix --- */
-        .gallery-section { display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
+        /* --- Letter & Gallery --- */
+        #letter-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 6000; justify-content: center; align-items: center; }
+        .letter-content { background: #fff; width: 85%; max-width: 600px; max-height: 80vh; padding: 40px; border-radius: 15px; overflow-y: auto; text-align: left; line-height: 1.8; border-top: 10px solid var(--accent); white-space: pre-wrap; }
+        
         .gallery-container { position: relative; width: 300px; height: 420px; margin: 40px auto 10px; }
-        .polaroid { position: absolute; top: 0; left: 0; width: 100%; background: white; padding: 10px 10px 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1); border-radius: 5px; }
+        .polaroid { position: absolute; top: 0; left: 0; width: 100%; background: white; padding: 10px 10px 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.6s; border-radius: 5px; }
         .polaroid img { width: 100%; height: 320px; object-fit: cover; }
 
-        /* Game and button spacing */
-        #game-container { margin: 20px 0; position: relative; width: 100%; }
-        .pichkari { font-size: 55px; cursor: pointer; display: inline-block; user-select: none; }
-        .target { position: absolute; font-weight: bold; color: white; pointer-events: none; }
+        /* --- Game --- */
+        #game-container { margin: 20px 0; position: relative; }
+        .pichkari { font-size: 55px; cursor: pointer; user-select: none; }
+        .target { position: absolute; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); pointer-events: none; }
 
-        .next-btn { padding: 15px 40px; border-radius: 10px; border: none; background: #333; color: #fff; cursor: pointer; font-weight: 600; font-size: 1.1rem; }
+        /* --- Buttons --- */
+        .btn-base { padding: 12px 35px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; margin: 10px; font-size: 1rem; }
+        .next-btn { background: #333; color: #fff; }
+        .exit-btn { background: var(--accent); color: #fff; margin-top: 50px; }
+
+        /* --- Splash --- */
+        .splat { position: absolute; width: 25px; height: 25px; border-radius: 50%; pointer-events: none; animation: fadeSplat 1s forwards; z-index: 9999; }
+        @keyframes fadeSplat { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
     </style>
 </head>
 <body onmousemove="drawSplat(event)" ontouchmove="drawSplat(event)">
 
-    <button id="mood-toggle" onclick="toggleMood()">🎨</button>
+    <button id="mood-toggle" onclick="cycleTheme()">🎨</button>
     <audio id="bgMusic" loop><source src="Image%20and%20Video/song.mp3" type="audio/mpeg"></audio>
     <div id="music-disk" onclick="toggleMusic()"></div>
 
     <div id="welcome-page" onclick="openGift()">
-        <div style="text-align: center;"><div style="font-size: 80px;">🎁</div><p style="font-family:'Caveat'; color:#fff; font-size:1.8rem;">Tap to open, Devi Ji! ✨</p></div>
+        <div style="text-align: center;"><div style="font-size: 80px; cursor: pointer;">🎁</div><p style="font-family:'Caveat'; color:#fff; font-size:1.8rem;">Tap to open, Devi Ji! ✨</p></div>
+    </div>
+
+    <div id="reel-modal">
+        <h2 style="font-family:'Caveat'; color:#fff; font-size:2.5rem; margin-bottom:15px;">Wishes from Reel</h2>
+        <span style="position:absolute; top:20px; right:30px; color:#fff; font-size:50px; cursor:pointer;" onclick="closeReel()">&times;</span>
+        <div style="width: 320px; height: 580px; border-radius: 15px; overflow: hidden; background: #000;">
+            <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVaSx98DH2d/" data-instgrm-version="14"></blockquote>
+            <script async src="//www.instagram.com/embed.js"></script>
+        </div>
     </div>
 
     <div id="letter-modal">
@@ -94,25 +98,37 @@ Khair.... Aoo ke papad aur gujiya hai kamal ki, happy holi baby ja color hai gul
     </div>
 
     <div id="main-content">
-        <div class="banner"></div>
-        <button onclick="openLetter()" style="margin-top:-30px; padding:15px 40px; border-radius:50px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-size:18px; box-shadow:0 10px 20px rgba(0,0,0,0.2);">✉️ Open Letter</button>
+        <div style="width:100%; height:60vh; background:url('Image%20and%20Video/backshot.jpg') center/cover no-repeat;"></div>
+        <button onclick="openLetter()" style="margin-top:-30px; padding:15px 40px; border-radius:50px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-size:1.1rem; box-shadow:0 10px 20px rgba(0,0,0,0.2);">✉️ Open Letter</button>
         
-        <div class="gallery-section">
-            <div class="gallery-container" id="gallery"></div>
-            
-            <div id="game-container">
-                <p style="color:var(--accent); font-weight:bold; margin-bottom:5px;">Spray away the bad vibes!</p>
-                <div class="pichkari" onclick="shootWater()">🔫</div>
-            </div>
-            
-            <button class="next-btn" onclick="nextPhoto()">Next Photo ➔</button>
+        <div class="gallery-container" id="gallery"></div>
+        <button class="btn-base next-btn" onclick="nextPhoto()">Next Photo ➔</button>
+
+        <div id="game-container">
+            <p style="color:var(--accent); font-weight:bold;">Spray away the bad vibes!</p>
+            <div class="pichkari" onclick="shootWater()">🔫</div>
         </div>
+
+        <button class="btn-base exit-btn" onclick="showExit()">Exit & Bye 💖</button>
+    </div>
+
+    <div id="exit-screen">
+        <h1 style="font-family:'Caveat'; font-size:3rem; color:var(--accent);">Thanks for being in my life Devi Ji 💝</h1>
+        <p style="font-size:1.2rem; max-width:600px; color:#444;">You are the only one whom I loved and will do anything to make you happy. LOVE YOU DEVI JI😇👉👈</p>
     </div>
 
     <script>
         const music = document.getElementById('bgMusic');
         const disk = document.getElementById('music-disk');
         let currentPhotoIndex = 0;
+        let themeIndex = 0;
+        const themes = ['', 'theme-vibrant', 'theme-sunset', 'theme-royal'];
+
+        function cycleTheme() {
+            document.body.classList.remove(...themes.filter(t => t));
+            themeIndex = (themeIndex + 1) % themes.length;
+            if (themes[themeIndex]) document.body.classList.add(themes[themeIndex]);
+        }
 
         function drawSplat(e) {
             const splat = document.createElement('div');
@@ -126,32 +142,34 @@ Khair.... Aoo ke papad aur gujiya hai kamal ki, happy holi baby ja color hai gul
             setTimeout(() => splat.remove(), 1000);
         }
 
-        function toggleMood() { document.body.classList.toggle('vibrant-mode'); }
-
         function shootWater() {
             const vibes = ["Late Wish", "Sadness", "Stress", "Distance", "Anger"];
             const target = document.createElement('div');
             target.className = 'target';
             target.innerText = vibes[Math.floor(Math.random()*vibes.length)];
-            target.style.left = "50%"; target.style.bottom = "80px";
-            document.querySelector('.gallery-section').appendChild(target);
-            target.animate([{ transform: 'translate(-50%, 0)', opacity: 1 }, { transform: 'translate(-50%, -300px)', opacity: 0 }], { duration: 1000, fill: 'forwards' });
-            setTimeout(() => target.remove(), 1000);
+            target.style.left = "50%"; target.style.bottom = "120px";
+            document.body.appendChild(target);
+            target.animate([{ transform: 'translate(-50%, 0)', opacity: 1 }, { transform: 'translate(-50%, -400px)', opacity: 0 }], { duration: 1200, fill: 'forwards' });
+            setTimeout(() => target.remove(), 1200);
         }
 
         function openGift() { 
-            document.getElementById('welcome-page').style.display = 'none'; 
-            document.getElementById('main-content').style.display = 'block'; 
+            document.getElementById('welcome-page').style.display = 'none';
+            document.getElementById('reel-modal').style.display = 'flex';
+        }
+
+        function closeReel() {
+            document.getElementById('reel-modal').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
             disk.style.display = 'block';
-            music.play().catch(e => console.log("Music blocked"));
+            music.play().catch(e => console.log("Blocked"));
             disk.style.animationPlayState = 'running';
             loadGallery();
             setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; }, 100);
         }
 
         function toggleMusic() { 
-            if(music.paused) { music.play(); disk.style.animationPlayState = 'running'; }
-            else { music.pause(); disk.style.animationPlayState = 'paused'; }
+            music.paused ? (music.play(), disk.style.animationPlayState='running') : (music.pause(), disk.style.animationPlayState='paused');
         }
 
         function openLetter() { document.getElementById('letter-modal').style.display = 'flex'; }
@@ -179,6 +197,13 @@ Khair.... Aoo ke papad aur gujiya hai kamal ki, happy holi baby ja color hai gul
                 photos.forEach(p => { p.style.transform = 'none'; p.style.opacity = '1'; });
                 currentPhotoIndex = 0;
             }
+        }
+
+        function showExit() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('music-disk').style.display = 'none';
+            document.getElementById('exit-screen').style.display = 'flex';
+            music.pause();
         }
     </script>
 </body>

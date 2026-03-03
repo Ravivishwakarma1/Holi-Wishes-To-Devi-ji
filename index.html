@@ -22,15 +22,6 @@
             font-family: 'Poppins', sans-serif;
             background: var(--bg-color); overflow-x: hidden;
             transition: background 0.5s ease;
-            cursor: crosshair;
-        }
-
-        /* --- Mood Switcher --- */
-        #mood-toggle {
-            position: fixed; top: 20px; right: 20px; z-index: 1001;
-            padding: 10px; background: #fff; border-radius: 50%;
-            cursor: pointer; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border: none;
         }
 
         /* --- Welcome Page --- */
@@ -38,22 +29,19 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, #ff9a9e, #fad0c4);
             display: flex; justify-content: center; align-items: center;
-            z-index: 100; transition: opacity 1s ease;
+            z-index: 1000; transition: opacity 1s ease;
         }
 
-        /* --- Music Controller Disk --- */
+        /* --- Music Controller --- */
         #music-disk {
             position: fixed; top: 20px; left: 20px; width: 60px; height: 60px;
             background: #333; border: 4px solid #fff; border-radius: 50%;
-            z-index: 1000; cursor: pointer; display: none;
+            z-index: 1001; cursor: pointer; display: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             animation: rotate 3s linear infinite;
             animation-play-state: paused;
         }
-        #music-disk::after {
-            content: '🎵'; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); font-size: 20px;
-        }
+        #music-disk::after { content: '🎵'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* --- Reel Modal & Balloons --- */
@@ -62,23 +50,8 @@
             background: rgba(0,0,0,0.95); display: none; z-index: 2000;
             justify-content: center; align-items: center; flex-direction: column;
         }
-        .reel-title { font-family: 'Caveat', cursive; color: #fff; font-size: 2.5rem; margin-bottom: 15px; }
-        
-        .floating-balloon {
-            position: absolute; font-size: 40px; animation: floatUp 4s infinite ease-in-out;
-            opacity: 0.8; pointer-events: none;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-20vh) rotate(20deg); }
-        }
-
-        /* --- Cursor Splat --- */
-        .splat {
-            position: absolute; width: 25px; height: 25px; border-radius: 50%;
-            pointer-events: none; animation: fadeSplat 1s forwards; z-index: 9999;
-        }
-        @keyframes fadeSplat { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
+        .floating-balloon { position: absolute; font-size: 40px; animation: floatUp 4s infinite ease-in-out; opacity: 0.8; pointer-events: none; }
+        @keyframes floatUp { 0% { transform: translateY(110vh); } 100% { transform: translateY(-20vh); } }
 
         /* --- Main Content --- */
         #main-content { display: none; opacity: 0; transition: 1.5s; text-align: center; }
@@ -92,25 +65,31 @@
         }
         .letter-content {
             background: #fff; width: 85%; max-width: 600px; max-height: 80vh;
-            padding: 30px; border-radius: 15px; overflow-y: auto; position: relative;
-            text-align: left; line-height: 1.6; border-top: 10px solid var(--accent);
+            padding: 30px; border-radius: 15px; overflow-y: auto; text-align: left; border-top: 10px solid var(--accent);
         }
 
         /* --- Stacked Gallery --- */
-        .gallery-container {
-            position: relative; width: 300px; height: 420px; margin: 60px auto 20px;
-        }
+        .gallery-container { position: relative; width: 300px; height: 420px; margin: 60px auto 20px; }
         .polaroid {
             position: absolute; top: 0; left: 0; width: 100%; background: white;
             padding: 10px 10px 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1); border-radius: 5px; text-align: center;
+            transition: 0.6s; border-radius: 5px;
         }
         .polaroid img { width: 100%; height: 320px; object-fit: cover; }
+
+        /* --- Pichkari Game --- */
+        #game-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 500; display: none; text-align: center; }
+        .pichkari { font-size: 60px; cursor: pointer; user-select: none; }
+        .target { position: absolute; font-weight: bold; color: white; pointer-events: none; white-space: nowrap; }
+
+        /* --- Cursor Splat --- */
+        .splat { position: absolute; width: 25px; height: 25px; border-radius: 50%; pointer-events: none; animation: fadeSplat 1s forwards; z-index: 9999; }
+        @keyframes fadeSplat { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
     </style>
 </head>
 <body onmousemove="drawSplat(event)" ontouchmove="drawSplat(event)">
 
-    <button id="mood-toggle" onclick="toggleMood()">🎨</button>
+    <button id="mood-toggle" onclick="toggleMood()" style="position:fixed; top:20px; right:20px; z-index:1001; padding:10px; background:#fff; border-radius:50%; border:none; cursor:pointer; font-size:24px;">🎨</button>
 
     <audio id="bgMusic" loop>
         <source src="Image%20and%20Video/song.mp3" type="audio/mpeg">
@@ -126,9 +105,9 @@
     </div>
 
     <div id="reel-modal">
-        <div class="floating-balloon" style="left:10%; animation-delay:0s;">🎈</div>
-        <div class="floating-balloon" style="right:10%; animation-delay:1s;">🎈</div>
-        <h2 class="reel-title">Wishes from Reel</h2>
+        <div class="floating-balloon" style="left:10%;">🎈</div>
+        <div class="floating-balloon" style="right:10%;">🎈</div>
+        <h2 style="font-family:'Caveat'; color:#fff; font-size:2.5rem; margin-bottom:15px;">Wishes from Reel</h2>
         <span style="position:absolute; top:20px; right:30px; color:#fff; font-size:50px; cursor:pointer;" onclick="closeReel()">&times;</span>
         <div style="width: 320px; height: 580px; border-radius: 15px; overflow: hidden;">
             <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVaSx98DH2d/" data-instgrm-version="14"></blockquote>
@@ -140,19 +119,20 @@
             <span style="float:right; cursor:pointer; font-size:30px;" onclick="closeLetter()">&times;</span>
             <h2 style="font-family:'Caveat'; color:var(--accent); text-align:center;">To My Devi Ji 💖</h2>
             <p>Jada English nhi ghusate hue start krte hai. To my one and only Love of my life, to my Devi ji, Puchki ji, Buggu ji, Paro ji, Priyatama ji. I want to wish you Happy Holi janta hu late hu and ye aapko dikhane me bhi late kr diya, and ha Ravi Shawwwww se bhi late hu ye bhi janta hu lekin sachi btau to aap paheli ho jisko maine raat me call pr wish kiya hai Happy Holi, aapke pahele kisi ko bhi wish nhi kiya maine. First I want to thank you, for being in my life and for making this this much beautiful and khubsurat, Thank you for everything you did for me, and aap bahut special ho kyuki aapne hm sabse jada dekha hai and tolerate kiya hai. Aapko pyar krna mere liye bahut jada hi acha decision tha and mai iss decision pr kabhi bhi regret nhi krunga. Mai aapko ye batana chahta hu ki aap bahut ki khubsurat ho and aap sab kuch kr skti sab kuch achieve kr skti ho jiske liye manifest krti ho, and aapki kismat nhi kharab hai, kismat to unki kharab hai jin logo ne aapko choda ya dukh pahuchaya hai, ye log bahut bekar kismat wale hai kyuki aapke jaise ladki na koi hai na hi koi hoga future me, you are the SPECIAL ONE, and believe me mai duniya ki to nhi janta lekin apne dil aur dimag ko jarur janta hu and dono ek hi ek kehte hai ki you are the one jisko mai dhund rha tha hamesha se and you that SPECIAL PERSON in my life. I know aap mere liye kuch feel nhi krti ho and aapko mere andar galtiya hai jo ki mai manta hu ki hai, and mai unpar kaam kr rha hu and usko sudhar rha hu, and mai jaldi hi wo insaan jarur bankr dikhaunga jo aapko chahiye. And I really don't care and will never question about your purity as I know ki aap ho pure & aap waisa kuch kabhi nhi krogi jisse aapko aage problem ho. And agr aisa kuch hai bhi to mere ko frk nhi padta hai kyuki maine aapke body se pyar nhi kiya hai mai aapko aapke soul se pyar krta hu and mai janta hu ki aapka soul hamesha pure rhega and kabhi bhi kuch galt nhi hoga. This doesn't mean ki mai aapke upr sawal kr rha hu bss mai isliye yha add kr rha hu ki aapne ye yhi question pucha aaj isliye. Khair Aoo ke papad aur gujiya hai kamal ki, happy holi baby ja color hai gulal ki.... Happy holi babu</p>
-            <div style="text-align:center; font-weight:bold; color:#e91e63; margin: 20px 0;">
-                YOU ARE MY ONLY LOVE AND I'LL NEVER MAKE YOU CRY OR FEEL ALONE..<br>
-                Love You Devi ji 💝
-            </div>
+            <div style="text-align:center; font-weight:bold; color:#e91e63; margin: 20px 0;">YOU ARE MY ONLY LOVE AND I'LL NEVER MAKE YOU CRY OR FEEL ALONE..<br>Love You Devi ji 💝</div>
             <div style="margin-top:20px; font-family:'Caveat';">Your Stupid Dog<br>Ravi Vishwakarma</div>
         </div>
     </div>
 
     <div id="main-content">
         <div class="banner"></div>
-        <button onclick="openLetter()" style="margin-top:-30px; padding:15px 40px; border-radius:50px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-size:18px; box-shadow:0 10px 20px rgba(0,0,0,0.2);">✉️ Open Letter</button>
+        <button onclick="openLetter()" style="margin-top:-30px; padding:15px 40px; border-radius:50px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-size:18px;">✉️ Open Letter</button>
         <div class="gallery-container" id="gallery"></div>
-        <button onclick="nextPhoto()" style="padding:12px 35px; border-radius:10px; border:none; background:#333; color:#fff; cursor:pointer; font-weight:600;">Next Photo ➔</button>
+        <button onclick="nextPhoto()" style="padding:12px 35px; border-radius:10px; border:none; background:#333; color:#fff; cursor:pointer;">Next Photo ➔</button>
+        <div id="game-container">
+            <p style="color:var(--accent); font-weight:bold;">Spray away the bad vibes!</p>
+            <div class="pichkari" onclick="shootWater()">🔫</div>
+        </div>
     </div>
 
     <script async src="//www.instagram.com/embed.js"></script>
@@ -164,7 +144,7 @@
         function drawSplat(e) {
             const splat = document.createElement('div');
             splat.className = 'splat';
-            const colors = ['#FF1744', '#F4FF81', '#00E676', '#2979FF', '#D500F9', '#FF9100'];
+            const colors = ['#FF1744', '#F4FF81', '#00E676', '#2979FF', '#D500F9'];
             splat.style.background = colors[Math.floor(Math.random() * colors.length)];
             const x = e.pageX || (e.touches ? e.touches[0].pageX : 0);
             const y = e.pageY || (e.touches ? e.touches[0].pageY : 0);
@@ -175,12 +155,22 @@
 
         function toggleMood() { document.body.classList.toggle('vibrant-mode'); }
 
-        function openGift() { 
-            document.getElementById('welcome-page').style.opacity = '0'; 
-            setTimeout(() => { 
+        function shootWater() {
+            const vibes = ["Late Wish", "Sadness", "Stress", "Distance", "Anger"];
+            const target = document.createElement('div');
+            target.className = 'target';
+            target.innerText = vibes[Math.floor(Math.random()*vibes.length)];
+            target.style.left = "50%"; target.style.bottom = "100px";
+            document.body.appendChild(target);
+            target.animate([{ transform: 'translate(-50%, 0) scale(1)', opacity: 1 }, { transform: 'translate(-50%, -80vh) scale(2)', opacity: 0 }], { duration: 1000, fill: 'forwards' });
+            setTimeout(() => target.remove(), 1000);
+        }
+
+        function openGift() {
+            document.getElementById('welcome-page').style.opacity = '0';
+            setTimeout(() => {
                 document.getElementById('welcome-page').style.display = 'none';
                 document.getElementById('reel-modal').style.display = 'flex';
-                // Force load Instagram Reel if it didn't trigger
                 if (window.instgrm) window.instgrm.Embeds.process();
             }, 1000);
         }
@@ -188,21 +178,17 @@
         function closeReel() {
             document.getElementById('reel-modal').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
+            document.getElementById('game-container').style.display = 'block';
             disk.style.display = 'block';
-            toggleMusic(true); 
+            music.play().catch(() => console.log("Music blocked"));
+            disk.style.animationPlayState = 'running';
             loadGallery();
             setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; }, 100);
         }
 
-        function toggleMusic(forcePlay = false) { 
-            if(forcePlay || music.paused) { 
-                music.play().catch(e => console.log("Music blocked by browser")); 
-                disk.style.animationPlayState = 'running'; 
-            }
-            else { 
-                music.pause(); 
-                disk.style.animationPlayState = 'paused'; 
-            }
+        function toggleMusic() {
+            if(music.paused) { music.play(); disk.style.animationPlayState = 'running'; }
+            else { music.pause(); disk.style.animationPlayState = 'paused'; }
         }
 
         function openLetter() { document.getElementById('letter-modal').style.display = 'flex'; }
@@ -215,6 +201,7 @@
                 const img = document.createElement('div');
                 img.className = 'polaroid';
                 img.style.zIndex = 12 - i;
+                // Added space encoding for the folder name
                 img.innerHTML = `<img src="Image%20and%20Video/image${i}.jpg" onerror="this.src='https://via.placeholder.com/300x320?text=Image+Missing'"><p style="font-family:'Caveat'; margin-top:10px;">Memory ${i}</p>`;
                 gallery.appendChild(img);
             }
